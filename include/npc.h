@@ -21,6 +21,7 @@ protected:
     unsigned int x = 0;
     unsigned int y = 0;
     std::string unique_name;
+    bool alive = true;
     std::vector<std::shared_ptr<Observer>> observers;
 
 public:
@@ -34,6 +35,8 @@ public:
     unsigned int get_x() const;
     unsigned int get_y() const;
     std::string get_name() const;
+    bool is_alive() const;
+    void make_dead();
 
     virtual bool accept(std::shared_ptr <Npc> npc_ptr) const = 0;
 

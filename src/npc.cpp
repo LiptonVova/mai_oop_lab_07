@@ -40,6 +40,14 @@ std::string Npc::get_name() const {
     return this->unique_name;
 }
 
+bool Npc::is_alive() const {
+    return this->alive == true;
+}
+
+void Npc::make_dead() {
+    this->alive = false;
+}
+
 void Npc::attach(std::shared_ptr<Observer> observer) {
     observers.push_back(observer);
 }
