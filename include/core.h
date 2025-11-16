@@ -3,9 +3,11 @@
 
 #include <set>
 #include <queue>
+#include <string>
 
 
 #include "npc.h"
+#include "factory_npc.h"
 
 
 struct FightEvent {
@@ -29,10 +31,12 @@ private:
     std::set<std::shared_ptr<Npc> > set_npc;
     std::mutex mtx;
     FightFunctor fight_functor_;
+    const int MAX_VALUE;
 
 public:
     MoveFunctor() = delete;
-    explicit MoveFunctor(const std::set<std::shared_ptr<Npc> > &set_npc) : set_npc(set_npc) {};
+    explicit MoveFunctor(const std::set<std::shared_ptr<Npc> > &set_npc, const int MAX_VALUE) :
+        set_npc(set_npc), MAX_VALUE(MAX_VALUE) {};
     void operator()();
 };
 

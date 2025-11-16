@@ -68,7 +68,6 @@ void MoveFunctor::operator()() {
             }
 
             // логика шага
-            const int MAX_VALUE = 500;
             int shift_x = std::rand() % MAX_VALUE;
             int shift_y = std::rand() % MAX_VALUE;
             attacker->move(shift_x, shift_y, MAX_VALUE);
@@ -98,12 +97,51 @@ void start_fight(std::set<std::shared_ptr<Npc> > &set_npc, const int distance) {
     }
 }
 
+std::set<std::shared_ptr<Npc> > generate_npc(const int MAX_VALUE) {
+    std::set<std::shared_ptr<Npc> > set_npc;
+    const int N = 50;
+    for (int i = 0; i < N; i++) {
+        const int rand_type = std::rand() % 3;
+        TypeNpc type = TypeNpc::dragon;
+        std::string name = "";
+        switch (rand_type) {
+            case 0:
+                name = "dragon";
+                type = TypeNpc::dragon;
+                break;
+            case 1:
+                name = "frog";
+                type = TypeNpc::frog;
+                break;
+            case 2:
+                name = "knight errant";
+                type = TypeNpc::knight_errant;
+                break;
+        }
+
+        int x = std::rand() % MAX_VALUE;
+        int y = std::rand() % MAX_VALUE;
+        std::shared_ptr<Npc> npc = FactoryNpc::create_npc(type, name, x, y);
+        set_npc.insert(npc);
+    }
+
+    return set_npc;
+}
+
 
 void start_programm() {
     // основной поток
     // сгенерировать npc
     // запустить два потока FightFunctor и MoveFunctor
     // генерировать карту через определенные промежутки времени
+
+    const int MAX_VALUE = 500;
+
+    std::set<std::shared_ptr<Npc> > set_npc = generate_npc(MAX_VALUE);
+
+
+
+
 
 
 
