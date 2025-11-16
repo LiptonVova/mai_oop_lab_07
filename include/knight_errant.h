@@ -7,14 +7,17 @@
 
 class KnightErrant final: public Npc {
 private:
-    int distance_step = 30;
-    int distance_kill = 10;
+    unsigned int distance_step = 30;
+    unsigned int distance_kill = 10;
 public:
     KnightErrant() : Npc() {};
     KnightErrant(const unsigned int x, const unsigned int y, const std::string &name) : Npc(x, y, name) {};
 
     KnightErrant(KnightErrant &&other) noexcept : Npc(std::move(other)) {};
     KnightErrant(const KnightErrant &other) = default;
+
+    unsigned int get_distance_step() const override;
+    unsigned int get_distance_kill() const override;
 
     bool accept(std::shared_ptr <Npc> npc_ptr) const override;
 

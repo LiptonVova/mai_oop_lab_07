@@ -22,8 +22,6 @@ protected:
     unsigned int y = 0;
     std::string unique_name;
     bool alive = true;
-    int distance_step;
-    int distance_kill;
     std::vector<std::shared_ptr<Observer>> observers;
 
 public:
@@ -37,8 +35,8 @@ public:
     unsigned int get_x() const;
     unsigned int get_y() const;
     std::string get_name() const;
-    int get_distance_step() const;
-    int get_distance_kill() const;
+    virtual unsigned int get_distance_step() const = 0;
+    virtual unsigned int get_distance_kill() const = 0;
     bool is_alive() const;
     void make_dead();
 

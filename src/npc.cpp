@@ -40,14 +40,6 @@ std::string Npc::get_name() const {
     return this->unique_name;
 }
 
-int Npc::get_distance_step() const {
-    return this->distance_step;
-}
-
-int Npc::get_distance_kill() const {
-    return this->distance_kill;
-}
-
 bool Npc::is_alive() const {
     return this->alive == true;
 }

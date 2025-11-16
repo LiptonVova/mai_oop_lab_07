@@ -9,3 +9,11 @@ bool Dragon::accept(std::shared_ptr <Npc> npc_ptr) const {
     VisitorFightDragon visitor_fight_dragon;
     return visitor_fight_dragon.fight(npc_ptr);
 }
+
+unsigned int Dragon::get_distance_step() const {
+    return this->distance_step;
+}
+
+unsigned int Dragon::get_distance_kill() const {
+    return this->distance_kill;
+}

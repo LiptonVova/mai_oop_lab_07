@@ -7,14 +7,17 @@
 
 class Dragon final : public Npc {
 private:
-    int distance_step = 50;
-    int distance_kill = 50;
+    unsigned int distance_step = 50;
+    unsigned int distance_kill = 50;
 public:
     Dragon() : Npc() {};
     Dragon(const unsigned int x, const unsigned int y, const std::string &name) : Npc(x, y, name) {};
 
     Dragon(Dragon &&other) noexcept : Npc(std::move(other)) {};
     Dragon(const Dragon &other) = default;
+
+    unsigned int get_distance_step() const override;
+    unsigned int get_distance_kill() const override;
 
     bool accept(std::shared_ptr <Npc> npc_ptr) const override;
 

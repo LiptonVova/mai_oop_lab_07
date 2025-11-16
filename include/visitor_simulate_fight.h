@@ -9,10 +9,6 @@
 #include "knight_errant.h"
 #include "frog.h"
 
-bool validate_fight(const std::shared_ptr<Npc> &npc_1, const std::shared_ptr<Npc> &npc_2, const int distance);
-
-std::set<std::shared_ptr<Npc>> simulate_fight(const std::set<std::shared_ptr<Npc> > &set_npc, const int distance);
-
 class IVisitorFight {
 public:
     // абстрактный класс visitor
