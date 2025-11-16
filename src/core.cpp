@@ -102,20 +102,17 @@ std::set<std::shared_ptr<Npc> > generate_npc(const int MAX_VALUE) {
     const int N = 50;
     for (int i = 0; i < N; i++) {
         const int rand_type = std::rand() % 3;
-        TypeNpc type = TypeNpc::dragon;
+        TypeNpc type = static_cast<TypeNpc>(rand_type);
         std::string name = "";
         switch (rand_type) {
             case 0:
                 name = "dragon";
-                type = TypeNpc::dragon;
                 break;
             case 1:
                 name = "frog";
-                type = TypeNpc::frog;
                 break;
             case 2:
                 name = "knight errant";
-                type = TypeNpc::knight_errant;
                 break;
         }
 
