@@ -4,6 +4,7 @@
 #include <set>
 #include <queue>
 #include <string>
+#include <thread>
 
 
 #include "npc.h"
@@ -19,8 +20,12 @@ class FightFunctor {
 private:
     std::queue<FightEvent> events;
     std::mutex mtx;
+    std::shared_ptr<bool> is_work_thread;
 public:
-    FightFunctor() = default;
+    FightFunctor() = delete;
+    FightFunctor(std::shared_ptr<bool> is_work_thread) :
+        is_work_thread(is_work_thread) {}
+    FightFunctor(const FightFunctor &other);
     void add_event(std::shared_ptr<Npc> attacker, std::shared_ptr<Npc> defender);
     void operator()();
 };
@@ -32,11 +37,12 @@ private:
     std::mutex mtx;
     FightFunctor fight_functor_;
     const int MAX_VALUE;
+    std::shared_ptr<bool> is_work_thread;
 
 public:
     MoveFunctor() = delete;
-    explicit MoveFunctor(const std::set<std::shared_ptr<Npc> > &set_npc, const int MAX_VALUE) :
-        set_npc(set_npc), MAX_VALUE(MAX_VALUE) {};
+    explicit MoveFunctor(const std::set<std::shared_ptr<Npc> > &set_npc, FightFunctor& fight_functor_, const int MAX_VALUE, std::shared_ptr<bool> is_work_thread) :
+        set_npc(set_npc), fight_functor_(fight_functor_), MAX_VALUE(MAX_VALUE), is_work_thread(is_work_thread) {};
     void operator()();
 };
 

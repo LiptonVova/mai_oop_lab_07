@@ -8,8 +8,14 @@ void FightFunctor::add_event(std::shared_ptr<Npc> attacker, std::shared_ptr<Npc>
     events.emplace(attacker, defender);
 }
 
+FightFunctor::FightFunctor(const FightFunctor &other) {
+    events = other.events;
+    is_work_thread = other.is_work_thread;
+}
+
+
 void FightFunctor::operator()() {
-    while (true) {
+    while (*this->is_work_thread) {
         // брать из очереди ивент
         // если произошло убийство
         // то надо поменять в defender поле alive на false
@@ -55,7 +61,7 @@ bool is_murder_available(std::shared_ptr<Npc> attacker, std::shared_ptr<Npc> def
 }
 
 void MoveFunctor::operator()() {
-    while (true) {
+    while (*this->is_work_thread) {
         // постоянно проходиться по сету npc
         // если кто-то умер, но он все равно в сете - удалить
         // если позволяет дистанция, то создать ивент в FightFunctor
@@ -136,10 +142,17 @@ void start_programm() {
 
     std::set<std::shared_ptr<Npc> > set_npc = generate_npc(MAX_VALUE);
 
+    std::shared_ptr <bool> is_work_thread = std::make_shared<bool>(true);
+    FightFunctor fight_functor(is_work_thread);
+    MoveFunctor move_functor(set_npc, fight_functor, MAX_VALUE, is_work_thread);
 
+    std::thread fight_thread(std::ref(fight_functor));
+    std::thread move_thread(std::ref(move_functor));
 
+    std::cout << "Main thread\n";
 
+    *is_work_thread = false;
 
-
-
+    move_thread.join();
+    fight_thread.join();
 }

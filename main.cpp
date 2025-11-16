@@ -103,5 +103,9 @@ int main() {
 
     std::cout << "Test print all npc from set after fight: \n";
     print_all_npc(std::cout, set_npc) << "\n";
+
+
+    start_programm();
+
     return 0;
 }
