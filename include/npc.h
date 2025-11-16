@@ -44,8 +44,8 @@ public:
 
     virtual bool accept(std::shared_ptr <Npc> npc_ptr) const = 0;
 
-    void attach(std::shared_ptr <Observer> observer);
-    void detach(std::shared_ptr <Observer> observer);
+    void attach(const std::shared_ptr <Observer> &observer);
+    void detach(const std::shared_ptr <Observer> &observer);
     void notify(Npc &defender);
 
     virtual std::string info() const = 0;
@@ -53,6 +53,7 @@ public:
 
     std::ofstream& save(std::ofstream &os) const;
 
+    void move(int shift_x, int shift_y, const int MAX_VALUE);
 
     virtual ~Npc() = default;
 };

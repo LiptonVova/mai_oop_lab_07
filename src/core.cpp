@@ -14,7 +14,7 @@ void FightFunctor::operator()() {
         // если произошло убийство
         // то надо поменять в defender поле alive на false
 
-        while (events.size() != 0) {
+        while (!events.empty()) {
             FightEvent current_event = events.front();
             events.pop();
 
@@ -64,16 +64,18 @@ void MoveFunctor::operator()() {
             std::lock_guard<std::mutex> lock(mtx);
 
             if (!attacker->is_alive()) {
-                // логика удаления
-                continue;
+                set_npc.erase(attacker);
             }
 
             // логика шага
+            const int MAX_VALUE = 500;
+            int shift_x = std::rand() % MAX_VALUE;
+            int shift_y = std::rand() % MAX_VALUE;
+            attacker->move(shift_x, shift_y, MAX_VALUE);
 
             for (auto &defender : set_npc) {
                 if (!defender->is_alive()) {
-                    // логика удаления
-                    continue;
+                    set_npc.erase(defender);
                 }
 
                 if (is_murder_available(attacker, defender)) {

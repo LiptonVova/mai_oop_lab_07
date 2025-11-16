@@ -56,11 +56,11 @@ void Npc::make_dead() {
     this->alive = false;
 }
 
-void Npc::attach(std::shared_ptr<Observer> observer) {
+void Npc::attach(const std::shared_ptr<Observer> &observer) {
     observers.push_back(observer);
 }
 
-void Npc::detach(std::shared_ptr<Observer> observer) {
+void Npc::detach(const std::shared_ptr<Observer> &observer) {
     observers.erase(std::remove(observers.begin(), observers.end(), observer), observers.end());
 }
 
@@ -78,6 +78,16 @@ std::ofstream& Npc::save(std::ofstream &os) const {
 std::ostream& Npc::print(std::ostream& os) const {
     os << this->info();
     return os;
+}
+
+void Npc::move(int shift_x, int shift_y, const int MAX_VALUE) {
+    if (shift_x + this->x <= MAX_VALUE && shift_x + static_cast<int>(this->x) >= 0) {
+        this->x += shift_x;
+    }
+
+    if (shift_y + this->y <= MAX_VALUE && shift_y + static_cast<int>(this->y) >= 0) {
+        this->y += shift_y;
+    }
 }
 
 
