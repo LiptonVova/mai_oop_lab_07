@@ -74,8 +74,15 @@ void MoveFunctor::operator()() {
             }
 
             // логика шага
-            int shift_x = std::rand() % MAX_VALUE;
-            int shift_y = std::rand() % MAX_VALUE;
+            int is_negative_x = std::rand() % 2;
+            int is_negative_y = std::rand() % 2;
+
+            int shift_x = attacker->get_distance_step();
+            int shift_y = attacker->get_distance_step();
+
+            if (is_negative_x) shift_x = -shift_x;
+            if (is_negative_y) shift_y = -shift_y;
+
             attacker->move(shift_x, shift_y, MAX_VALUE);
 
             for (auto &defender : set_npc) {
@@ -138,11 +145,13 @@ void start_programm() {
     // запустить два потока FightFunctor и MoveFunctor
     // генерировать карту через определенные промежутки времени
 
-    const int MAX_VALUE = 500;
+    const int MAX_VALUE = 100;
 
     std::set<std::shared_ptr<Npc> > set_npc = generate_npc(MAX_VALUE);
 
     std::shared_ptr <bool> is_work_thread = std::make_shared<bool>(true);
+    std::mutex mtx;
+
     FightFunctor fight_functor(is_work_thread);
     MoveFunctor move_functor(set_npc, fight_functor, MAX_VALUE, is_work_thread);
 
@@ -150,6 +159,38 @@ void start_programm() {
     std::thread move_thread(std::ref(move_functor));
 
     std::cout << "Main thread\n";
+
+
+    auto begin = std::chrono::steady_clock::now();
+    auto end = std::chrono::steady_clock::now();
+    auto elapsed_time = std::chrono::duration_cast<std::chrono::seconds>(end - begin);
+
+    std::vector<std::vector <char> > grid(MAX_VALUE + 1, std::vector(MAX_VALUE + 1, '.'));
+    while (elapsed_time.count() < 30) {
+        // логика генерации карты
+        grid.assign(MAX_VALUE + 1, std::vector(MAX_VALUE + 1, '.'));
+
+        std::lock_guard<std::mutex> lock(mtx);
+        for (auto &npc : set_npc) {
+            if (!npc->is_alive()) continue;
+            const unsigned int x = npc->get_x();
+            const unsigned int y = npc->get_y();
+            grid[x][y] = npc->info()[0] + ('A' - 'a');
+        }
+
+        for (int i = 0; i < grid.size(); i++) {
+            for (int j = 0; j < grid[i].size(); j++) {
+                std::cout << grid[i][j];
+            }
+            std::cout << '\n';
+        }
+
+        std::cout << "\n\n\n\n\n";
+
+        std::this_thread::sleep_for(std::chrono::seconds(5));
+        end = std::chrono::steady_clock::now();
+        elapsed_time = std::chrono::duration_cast<std::chrono::seconds>(end - begin);
+    }
 
     *is_work_thread = false;
 

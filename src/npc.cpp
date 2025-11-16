@@ -40,11 +40,11 @@ std::string Npc::get_name() const {
     return this->unique_name;
 }
 
-unsigned int Npc::get_distance_step() const {
+int Npc::get_distance_step() const {
     return this->distance_step;
 }
 
-unsigned int Npc::get_distance_kill() const {
+int Npc::get_distance_kill() const {
     return this->distance_kill;
 }
 

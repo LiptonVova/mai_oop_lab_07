@@ -7,8 +7,8 @@
 
 class Frog final: public Npc {
 private:
-    unsigned int distance_step = 1;
-    unsigned int distance_kill = 10;
+    int distance_step = 1;
+    int distance_kill = 10;
 public:
     Frog() : Npc() {};
     Frog(const unsigned int x, const unsigned int y, const std::string &name) : Npc(x, y, name) {};

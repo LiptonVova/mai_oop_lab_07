@@ -7,8 +7,8 @@
 
 class Dragon final : public Npc {
 private:
-    unsigned int distance_step = 50;
-    unsigned int distance_kill = 50;
+    int distance_step = 50;
+    int distance_kill = 50;
 public:
     Dragon() : Npc() {};
     Dragon(const unsigned int x, const unsigned int y, const std::string &name) : Npc(x, y, name) {};

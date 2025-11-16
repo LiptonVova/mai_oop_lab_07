@@ -7,8 +7,8 @@
 
 class KnightErrant final: public Npc {
 private:
-    unsigned int distance_step = 30;
-    unsigned int distance_kill = 10;
+    int distance_step = 30;
+    int distance_kill = 10;
 public:
     KnightErrant() : Npc() {};
     KnightErrant(const unsigned int x, const unsigned int y, const std::string &name) : Npc(x, y, name) {};

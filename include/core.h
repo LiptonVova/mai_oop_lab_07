@@ -5,6 +5,7 @@
 #include <queue>
 #include <string>
 #include <thread>
+#include <chrono>
 
 
 #include "npc.h"
