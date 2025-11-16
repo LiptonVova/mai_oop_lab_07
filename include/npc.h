@@ -1,0 +1,56 @@
+#ifndef MAI_OOP_LAB_06_NPC_H
+#define MAI_OOP_LAB_06_NPC_H
+
+class Npc;
+class Observer;
+
+#include <iostream>
+#include <string>
+#include <memory>
+#include <vector>
+#include <algorithm>
+#include <set>
+
+#include "observer.h"
+
+
+class Npc {
+    friend std::istream& operator>>(std::istream& is, Npc& npc);
+
+protected:
+    unsigned int x = 0;
+    unsigned int y = 0;
+    std::string unique_name;
+    std::vector<std::shared_ptr<Observer>> observers;
+
+public:
+    Npc() = default;
+
+    Npc(const unsigned int x, const unsigned int y, const std::string &name);
+
+    Npc(Npc&& other) noexcept;
+    Npc(const Npc& other) = default;
+
+    unsigned int get_x() const;
+    unsigned int get_y() const;
+    std::string get_name() const;
+
+    virtual bool accept(std::shared_ptr <Npc> npc_ptr) const = 0;
+
+    void attach(std::shared_ptr <Observer> observer);
+    void detach(std::shared_ptr <Observer> observer);
+    void notify(Npc &defender);
+
+    virtual std::string info() const = 0;
+    std::ostream& print(std::ostream& os) const;
+
+    std::ofstream& save(std::ofstream &os) const;
+
+
+    virtual ~Npc() = default;
+};
+
+std::ostream &print_all_npc(std::ostream &os, std::set<std::shared_ptr<Npc>> &set_npc);
+
+
+#endif //MAI_OOP_LAB_06_NPC_H

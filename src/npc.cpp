@@ -1,0 +1,73 @@
+#include "../include/npc.h"
+
+#include <memory>
+
+
+std::istream& operator>>(std::istream& is, Npc& npc) {
+    is >> npc.x >> npc.y >> npc.unique_name;
+    return is;
+}
+
+Npc::Npc(Npc&& other) noexcept {
+    unique_name = std::move(other.unique_name);
+    x = other.x;
+    y = other.y;
+}
+
+Npc::Npc(const unsigned int x, const unsigned int y, const std::string &name) {
+    static std::set<std::string> names;
+    static unsigned int count = 0;
+
+    this->x = x;
+    this->y = y;
+    std::string copy_name = name;
+    if (names.count(name) != 0) {
+        copy_name += std::to_string(count++);
+    }
+    this->unique_name = std::move(copy_name);
+    names.insert(name);
+}
+
+unsigned int Npc::get_x() const {
+    return this->x;
+}
+
+unsigned int Npc::get_y() const {
+    return this->y;
+}
+
+std::string Npc::get_name() const {
+    return this->unique_name;
+}
+
+void Npc::attach(std::shared_ptr<Observer> observer) {
+    observers.push_back(observer);
+}
+
+void Npc::detach(std::shared_ptr<Observer> observer) {
+    observers.erase(std::remove(observers.begin(), observers.end(), observer), observers.end());
+}
+
+void Npc::notify(Npc &defender) {
+    for (auto &observer : observers) {
+        observer->update(*this, defender);
+    }
+}
+
+std::ofstream& Npc::save(std::ofstream &os) const {
+    os << this->info();
+    return os;
+}
+
+std::ostream& Npc::print(std::ostream& os) const {
+    os << this->info();
+    return os;
+}
+
+
+std::ostream &print_all_npc(std::ostream &os, std::set<std::shared_ptr<Npc>> &set_npc) {
+    for (auto &npc : set_npc) {
+        npc->print(os);
+    }
+    return os;
+}
