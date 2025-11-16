@@ -11,8 +11,8 @@ void FightFunctor::add_event(std::shared_ptr<Npc> attacker, std::shared_ptr<Npc>
 FightFunctor::FightFunctor(const FightFunctor &other) {
     events = other.events;
     is_work_thread = other.is_work_thread;
+    mtx = other.mtx;
 }
-
 
 void FightFunctor::operator()() {
     while (*this->is_work_thread) {
@@ -24,7 +24,7 @@ void FightFunctor::operator()() {
             FightEvent current_event = events.front();
             events.pop();
 
-            std::lock_guard<std::mutex> lock(mtx);
+            std::lock_guard<std::shared_mutex> lock(*mtx);
             std::shared_ptr<Npc>& attacker = current_event.attacker;
             std::shared_ptr<Npc>& defender = current_event.defender;
             if (attacker->is_alive()) {
@@ -67,7 +67,7 @@ void MoveFunctor::operator()() {
         // если позволяет дистанция, то создать ивент в FightFunctor
 
         for (auto &attacker : set_npc) {
-            std::lock_guard<std::mutex> lock(mtx);
+            std::lock_guard<std::shared_mutex> lock(*mtx);
 
             if (!attacker->is_alive()) {
                 set_npc.erase(attacker);
@@ -150,10 +150,10 @@ void start_programm() {
     std::set<std::shared_ptr<Npc> > set_npc = generate_npc(MAX_VALUE);
 
     std::shared_ptr <bool> is_work_thread = std::make_shared<bool>(true);
-    std::mutex mtx;
+    std::shared_ptr<std::shared_mutex> mtx_ptr = std::make_shared<std::shared_mutex>();
 
-    FightFunctor fight_functor(is_work_thread);
-    MoveFunctor move_functor(set_npc, fight_functor, MAX_VALUE, is_work_thread);
+    FightFunctor fight_functor(is_work_thread, mtx_ptr);
+    MoveFunctor move_functor(set_npc, fight_functor, MAX_VALUE, is_work_thread, mtx_ptr);
 
     std::thread fight_thread(std::ref(fight_functor));
     std::thread move_thread(std::ref(move_functor));
@@ -170,7 +170,7 @@ void start_programm() {
         // логика генерации карты
         grid.assign(MAX_VALUE + 1, std::vector(MAX_VALUE + 1, '.'));
 
-        std::lock_guard<std::mutex> lock(mtx);
+        std::shared_lock<std::shared_mutex> lock(*mtx_ptr);
         for (auto &npc : set_npc) {
             if (!npc->is_alive()) continue;
             const unsigned int x = npc->get_x();
