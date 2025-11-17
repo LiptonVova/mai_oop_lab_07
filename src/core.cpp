@@ -58,7 +58,7 @@ void FightFunctor::operator()() {
             }
         }
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
 }
 
@@ -119,7 +119,7 @@ void MoveFunctor::operator()() {
             }
         }
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     }
 }
 
@@ -157,6 +157,16 @@ std::set<std::shared_ptr<Npc> > generate_npc(const int MAX_VALUE) {
     return set_npc;
 }
 
+void print_alive_npc(const std::set<std::shared_ptr<Npc> > &set_npc) {
+    std::cout << "Alive npc:\n";
+    for (auto &npc :set_npc) {
+        if (npc->is_alive()) {
+            npc->print(std::cout) << '\n';
+        }
+    }
+}
+
+
 
 void start_programm() {
     // основной поток
@@ -184,7 +194,7 @@ void start_programm() {
     auto elapsed_time = std::chrono::duration_cast<std::chrono::seconds>(end - begin);
 
     std::vector<std::vector <char> > grid(MAX_VALUE + 1, std::vector(MAX_VALUE + 1, '.'));
-    while (elapsed_time.count() < 30) {
+    while (elapsed_time.count() < 5) {
         // логика генерации карты
         grid.assign(MAX_VALUE + 1, std::vector(MAX_VALUE + 1, '.'));
 
@@ -217,4 +227,6 @@ void start_programm() {
 
     move_thread.join();
     fight_thread.join();
+
+    print_alive_npc(set_npc);
 }
