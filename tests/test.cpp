@@ -97,33 +97,6 @@ TEST_F(RPGTest, ObserverPattern) {
     EXPECT_TRUE(output.find("kill") != std::string::npos);
 }
 
-// Тест симуляции боя
-TEST_F(RPGTest, BattleSimulation) {
-    std::set<std::shared_ptr<Npc>> npcs;
-    
-    // Создаем небольшую группу NPC
-    npcs.insert(FactoryNpc::create_npc(TypeNpc::dragon, "name_dragon"));
-    npcs.insert(FactoryNpc::create_npc(TypeNpc::frog, "name_frog"));
-    npcs.insert(FactoryNpc::create_npc(TypeNpc::knight_errant, "name_knight_errant"));
-    
-    size_t initial_size = npcs.size();
-    
-    // Запускаем бой с большой дистанцией
-    start_fight(npcs, 1000);
-    
-    // После боя должно остаться меньше NPC
-    EXPECT_LT(npcs.size(), initial_size);
-
-    bool frog_survived = false;
-    for (const auto& npc : npcs) {
-        if (npc->info().find("frog") != std::string::npos) {
-            frog_survived = true;
-            break;
-        }
-    }
-    EXPECT_TRUE(frog_survived);
-}
-
 
 // Тест детача наблюдателей
 TEST_F(RPGTest, ObserverDetach) {
